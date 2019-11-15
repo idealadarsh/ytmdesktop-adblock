@@ -1,7 +1,7 @@
 {
   "name": "youtube-music-desktop-app",
-  "version": "1.5.0",
-  "description": "YouTube Music Desktop App",
+  "version": "1.5.1",
+  "description": "YouTube Music Desktop App + Adblocker",
   "main": "main.js",
   "scripts": {
     "start": "npx electron .",
@@ -13,9 +13,10 @@
     "publish:win32": "build --win -p always --config electron-builder.yml",
     "publish:win": "npm run publish:win32 && npm run publish:win64",
     "publish:mac": "build --mac -p always --config electron-builder64.yml",
-    "publish:lin": "build --linux -p always --config electron-builder.yml"
+    "publish:lin": "build --linux -p always --config electron-builder.yml",
+    "rebuild": "electron-rebuild --win -f -w ad-block"
   },
-  "repository": "https://github.com/adlerluiz/ytmdesktop",
+  "repository": "https://github.com/JamesParkDev/ytmdesktop-adblock",
   "keywords": [
     "Electron",
     "Youtube",
@@ -35,6 +36,7 @@
     "pretty-quick": "^1.11.1"
   },
   "dependencies": {
+    "@cliqz/adblocker-electron": "^1.4.0",
     "discord-rpc": "^3.0.1",
     "electron-canvas-to-buffer": "^2.0.0",
     "electron-google-analytics": "^0.1.0",

@@ -6,7 +6,8 @@ const {
   globalShortcut,
   Menu,
   ipcMain,
-  systemPreferences
+  systemPreferences,
+  Session
 } = require("electron");
 const path = require("path");
 const fs = require("fs");
@@ -19,6 +20,12 @@ const { setMac, calcYTViewSize } = require("./utils/calcYTViewSize");
 const { isWindows, isMac } = require("./utils/systemInfo");
 const isDev = require("electron-is-dev");
 const isOnline = require("is-online");
+const {
+  ElectronBlocker,
+  fullLists,
+  Request
+} = require("@cliqz/adblocker-electron");
+const fetch = require("node-fetch");
 const {
   companionUrl,
   companionWindowTitle,
@@ -66,7 +73,7 @@ if (isWindows()) {
   Menu.setApplicationMenu(menu);
 }
 
-function createWindow() {
+async function createWindow() {
   if (isMac() || isWindows()) {
     const execApp = path.basename(process.execPath);
     const startArgs = ["--processStart", `"${execApp}"`];
@@ -120,6 +127,36 @@ function createWindow() {
     }
   }
   mainWindow = new BrowserWindow(broswerWindowConfig);
+
+  const blocker = await ElectronBlocker.fromLists(fetch, fullLists, {
+    enableCompression: true
+  });
+
+  blocker.enableBlockingInSession(mainWindow.webContents.session);
+
+  blocker.on("request-blocked", request => {
+    console.log("blocked", request.tabId, request.url);
+  });
+
+  blocker.on("request-redirected", request => {
+    console.log("redirected", request.tabId, request.url);
+  });
+
+  blocker.on("request-whitelisted", request => {
+    console.log("whitelisted", request.tabId, request.url);
+  });
+
+  blocker.on("csp-injected", request => {
+    console.log("csp", request.url);
+  });
+
+  blocker.on("script-injected", (script, url) => {
+    console.log("script", script.length, url);
+  });
+
+  blocker.on("style-injected", (style, url) => {
+    console.log("style", style.length, url);
+  });
 
   const view = new BrowserView({
     webPreferences: {
