@@ -63,11 +63,10 @@
         "uuid": "^8.3.2",
         "ws": "^7.4.2",
         "@cliqz/adblocker-electron": "^1.4.0",
-    "is-online": "^8.2.0",
-    "materialize-css": "^1.0.0",
-    "npx": "^10.2.0",
-    "prettier": "^1.18.2",
-    "request": "^2.88.0"
+        "is-online": "^8.2.0",
+        "materialize-css": "^1.0.0",
+        "npx": "^10.2.0",
+        "request": "^2.88.0"
     },
     "optionalDependencies": {
         "@nodert-win10-rs4/windows.foundation": "^0.4.4",
