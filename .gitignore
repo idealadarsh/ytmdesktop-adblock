@@ -21,3 +21,6 @@ package-lock.json
 app-update.yml
 dev-app-update.yml
 commit_hash.js
+
+yarn.lock
+package-lock.json
