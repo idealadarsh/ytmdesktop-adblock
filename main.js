@@ -1,50 +1,48 @@
 // Modules to control application life and create native browser window
 const {
-  app,
-  BrowserWindow,
-  BrowserView,
-  globalShortcut,
-  Menu,
-  ipcMain,
-  systemPreferences,
-  session,
+    app,
+    BrowserWindow,
+    BrowserView,
+    globalShortcut,
+    Menu,
+    ipcMain,
+    systemPreferences,
+    session,
     nativeTheme,
     screen,
     shell,
     dialog,
     powerMonitor,
-} = require("electron");
-const path = require("path");
-const fs = require("fs");
-const electronStore = require("electron-store");
-const store = new electronStore();
-const discordRPC = require("./providers/discordRpcProvider");
-const __ = require("./providers/translateProvider");
-const { statusBarMenu } = require("./providers/templateProvider");
-const { setMac, calcYTViewSize } = require("./utils/calcYTViewSize");
-const { isWindows, isMac } = require("./utils/systemInfo");
-const isDev = require("electron-is-dev");
-const isOnline = require("is-online");
+} = require('electron')
+const path = require('path')
+const fs = require('fs')
+const electronStore = require('electron-store')
+const store = new electronStore()
+const discordRPC = require('./providers/discordRpcProvider')
+const __ = require('./providers/translateProvider')
+const { statusBarMenu } = require('./providers/templateProvider')
+const { setMac, calcYTViewSize } = require('./utils/calcYTViewSize')
+const { isWindows, isMac } = require('./utils/systemInfo')
+const isDev = require('electron-is-dev')
+const isOnline = require('is-online')
 const {
-  ElectronBlocker,
-  fullLists,
-  Request
-} = require("@cliqz/adblocker-electron");
-const fetch = require("node-fetch");
+    ElectronBlocker,
+    fullLists,
+    Request,
+} = require('@cliqz/adblocker-electron')
+const fetch = require('node-fetch')
 const {
-  companionUrl,
-  companionWindowTitle,
-  companionWindowSettings
-} = require("./server.config");
+    companionUrl,
+    companionWindowTitle,
+    companionWindowSettings,
+} = require('./server.config')
 require('./src/utils/defaultSettings')
-
 
 const ClipboardWatcher = require('electron-clipboard-watcher')
 const electronLocalshortcut = require('electron-localshortcut')
 const electronLog = require('electron-log')
 const os = require('os')
 
-const { calcYTViewSize } = require('./src/utils/calcYTViewSize')
 const { isWindows, isMac, isLinux } = require('./src/utils/systemInfo')
 const { checkWindowPosition, doBehavior } = require('./src/utils/window')
 const fileSystem = require('./src/utils/fileSystem')
@@ -53,7 +51,6 @@ const Vibrant = require('node-vibrant')
 const __ = require('./src/providers/translateProvider')
 const assetsProvider = require('./src/providers/assetsProvider')
 const scrobblerProvider = require('./src/providers/scrobblerProvider')
-const { statusBarMenu } = require('./src/providers/templateProvider')
 const settingsProvider = require('./src/providers/settingsProvider')
 const infoPlayerProvider = require('./src/providers/infoPlayerProvider')
 const rainmeterNowPlaying = require('./src/providers/rainmeterNowPlaying')
@@ -305,34 +302,34 @@ async function createWindow() {
     )
 
     const blocker = await ElectronBlocker.fromLists(fetch, fullLists, {
-    enableCompression: true
-  });
+        enableCompression: true,
+    })
 
-  blocker.enableBlockingInSession(mainWindow.webContents.session);
+    blocker.enableBlockingInSession(mainWindow.webContents.session)
 
-  blocker.on("request-blocked", request => {
-    console.log("blocked", request.tabId, request.url);
-  });
+    blocker.on('request-blocked', request => {
+        console.log('blocked', request.tabId, request.url)
+    })
 
-  blocker.on("request-redirected", request => {
-    console.log("redirected", request.tabId, request.url);
-  });
+    blocker.on('request-redirected', request => {
+        console.log('redirected', request.tabId, request.url)
+    })
 
-  blocker.on("request-whitelisted", request => {
-    console.log("whitelisted", request.tabId, request.url);
-  });
+    blocker.on('request-whitelisted', request => {
+        console.log('whitelisted', request.tabId, request.url)
+    })
 
-  blocker.on("csp-injected", request => {
-    console.log("csp", request.url);
-  });
+    blocker.on('csp-injected', request => {
+        console.log('csp', request.url)
+    })
 
-  blocker.on("script-injected", (script, url) => {
-    console.log("script", script.length, url);
-  });
+    blocker.on('script-injected', (script, url) => {
+        console.log('script', script.length, url)
+    })
 
-  blocker.on("style-injected", (style, url) => {
-    console.log("style", style.length, url);
-  });
+    blocker.on('style-injected', (style, url) => {
+        console.log('style', style.length, url)
+    })
 
     view = new BrowserView({
         webPreferences: {
@@ -480,10 +477,10 @@ async function createWindow() {
         }
     })
 
-    view.webContents.on('did-start-navigation', (_) => {
+    view.webContents.on('did-start-navigation', _ => {
         view.webContents
             .executeJavaScript('window.location.hostname')
-            .then((hostname) => {
+            .then(hostname => {
                 if (hostname !== 'music.youtube.com') {
                     mainWindow.send('off-the-road')
                     global.on_the_road = false
@@ -495,7 +492,7 @@ async function createWindow() {
                     loadCustomCSSPage()
                 }
             })
-            .catch((_) => console.log(`error did-start-navigation ${_}`))
+            .catch(_ => console.log(`error did-start-navigation ${_}`))
     })
 
     function updateActivity() {
@@ -626,7 +623,7 @@ async function createWindow() {
                  */
                 Vibrant.from(getTrackInfo().cover)
                     .getPalette()
-                    .then((palette) => {
+                    .then(palette => {
                         hue = palette.DarkVibrant.getHsl()[0] * 360
                         sat = palette.DarkVibrant.getHsl()[1] === 0 ? 0 : 70
                         view.webContents.executeJavaScript(`
@@ -658,7 +655,7 @@ async function createWindow() {
                         document.querySelector('.yt-uix-sessionlink').href;
                     `
                         )
-                        .then((result) => {
+                        .then(result => {
                             if (result) {
                                 const url = new URL(result)
                                 // Hostname correction as the provided url is for youtube.com
@@ -778,7 +775,7 @@ async function createWindow() {
     })
 
     let storePositionTimer
-    mainWindow.on('move', (_) => {
+    mainWindow.on('move', _ => {
         let position = mainWindow.getPosition()
         if (storePositionTimer) {
             clearTimeout(storePositionTimer)
@@ -795,7 +792,7 @@ async function createWindow() {
         view.webContents.focus()
     })
 
-    mainWindow.on('close', (e) => {
+    mainWindow.on('close', e => {
         if (settingsProvider.get('settings-keep-background')) {
             e.preventDefault()
             if (settingsProvider.get('settings-tray-icon')) {
@@ -1014,7 +1011,7 @@ async function createWindow() {
 
     settingsProvider.onDidChange(
         'settings-shiny-tray-song-title-rollable',
-        (data) => {
+        data => {
             console.log(data.newValue)
             global.sharedObj.rollable = data.newValue
             if (renderer_for_status_bar)
@@ -1022,20 +1019,17 @@ async function createWindow() {
         }
     )
 
-    settingsProvider.onDidChange(
-        'settings-rainmeter-web-now-playing',
-        (data) => {
-            if (data.newValue) rainmeterNowPlaying.start()
-            else rainmeterNowPlaying.stop()
-        }
-    )
+    settingsProvider.onDidChange('settings-rainmeter-web-now-playing', data => {
+        if (data.newValue) rainmeterNowPlaying.start()
+        else rainmeterNowPlaying.stop()
+    })
 
-    settingsProvider.onDidChange('settings-companion-server', (data) => {
+    settingsProvider.onDidChange('settings-companion-server', data => {
         if (data.newValue) companionServer.start()
         else companionServer.stop()
     })
 
-    settingsProvider.onDidChange('settings-genius-auth-server', (data) => {
+    settingsProvider.onDidChange('settings-genius-auth-server', data => {
         if (data.newValue) geniusAuthServer.start()
         else geniusAuthServer.stop()
     })
@@ -1044,22 +1038,22 @@ async function createWindow() {
         updateAccentColorPref()
     })
 
-    settingsProvider.onDidChange('settings-discord-rich-presence', (data) => {
+    settingsProvider.onDidChange('settings-discord-rich-presence', data => {
         if (data.newValue) discordRPC.start()
         else discordRPC.stop()
     })
 
-    settingsProvider.onDidChange('settings-custom-css-app', (data) => {
+    settingsProvider.onDidChange('settings-custom-css-app', data => {
         if (data.newValue) loadCustomCSSApp()
         else removeCustomCSSApp()
     })
 
-    settingsProvider.onDidChange('settings-custom-css-page', (data) => {
+    settingsProvider.onDidChange('settings-custom-css-page', data => {
         if (data.newValue) loadCustomCSSPage()
         else removeCustomCSSPage()
     })
 
-    settingsProvider.onDidChange('settings-page-zoom', (data) => {
+    settingsProvider.onDidChange('settings-page-zoom', data => {
         console.log(data)
         view.webContents.setZoomFactor(data.newValue / 100)
     })
@@ -1163,14 +1157,14 @@ async function createWindow() {
         tray.setShinyTray()
     })
 
-    ipcMain.on('closed', (_) => {
+    ipcMain.on('closed', _ => {
         mainWindow = null
         if (process.platform !== 'darwin') {
             app.quit()
         }
     })
 
-    ipcMain.on('show', (_) => {
+    ipcMain.on('show', _ => {
         mainWindow.show()
     })
 
@@ -1411,7 +1405,7 @@ async function createWindow() {
                 }, 1000)
             })
 
-            miniplayer.on('resize', (e) => {
+            miniplayer.on('resize', e => {
                 if (
                     !settingsProvider.get('settings-miniplayer-stream-config')
                 ) {
@@ -1817,11 +1811,11 @@ async function createWindow() {
                     });
                 `
             )
-            .then((_) => {
+            .then(_ => {
                 settingsProvider.set('settings-app-audio-output', audioLabel)
                 updateTrayAudioOutputs(audioDevices)
             })
-            .catch((_) =>
+            .catch(_ =>
                 writeLog({ type: 'warn', data: 'error setAudioOutput' })
             )
     }
@@ -1844,7 +1838,7 @@ async function createWindow() {
             removeCustomCssApp()
             view.webContents
                 .insertCSS(fileSystem.readFile(customThemeFile).toString())
-                .then((key) => {
+                .then(key => {
                     customCSSAppKey = key
                 })
         }
@@ -1868,7 +1862,7 @@ async function createWindow() {
 
             view.webContents
                 .insertCSS(fileSystem.readFile(customThemeFile).toString())
-                .then((key) => {
+                .then(key => {
                     customCSSPageKey = key
                 })
         }
@@ -1893,7 +1887,7 @@ async function createWindow() {
             if (settingsProvider.get('settings-clipboard-read')) {
                 clipboardWatcher = ClipboardWatcher({
                     watchDelay: 1000,
-                    onTextChange: (text) => {
+                    onTextChange: text => {
                         let regExp = /(https?:\/\/)(www.)?(music.youtube|youtube|youtu.be).*/
                         let match = text.match(regExp)
                         if (match) {
@@ -1914,7 +1908,7 @@ async function createWindow() {
 
                                 dialog
                                     .showMessageBox(mainWindow, options)
-                                    .then((success) => {
+                                    .then(success => {
                                         if (success.response === 0)
                                             loadMusicByUrl(videoUrl)
                                     })
@@ -2002,7 +1996,7 @@ else {
             settingsProvider.get('window-position'),
             settingsProvider.get('window-size')
         )
-            .then((visiblePosition) => {
+            .then(visiblePosition => {
                 console.log(visiblePosition)
                 settingsProvider.set('window-position', visiblePosition)
             })
@@ -2012,7 +2006,7 @@ else {
             width: 700,
             height: 800,
         })
-            .then((visiblePosition) => {
+            .then(visiblePosition => {
                 console.log(visiblePosition)
                 settingsProvider.set('lyrics-position', visiblePosition)
             })
@@ -2022,7 +2016,7 @@ else {
             width: settingsProvider.get('settings-miniplayer-size'),
             height: settingsProvider.get('settings-miniplayer-size'),
         })
-            .then((visiblePosition) => {
+            .then(visiblePosition => {
                 console.log(visiblePosition)
                 settingsProvider.set('miniplayer-position', visiblePosition)
             })
@@ -2311,11 +2305,11 @@ ipcMain.on('set-sleep-timer', (_, data) => {
     }
 })
 
-ipcMain.on('retrieve-sleep-timer', (e) => {
+ipcMain.on('retrieve-sleep-timer', e => {
     e.sender.send('sleep-timer-info', sleepTimer.mode, sleepTimer.counter)
 })
 
-ipcMain.handle('get-audio-output-list', (e) => {
+ipcMain.handle('get-audio-output-list', e => {
     settingsRendererIPC = e.sender
     return audioDevices
 })
