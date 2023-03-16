@@ -437,7 +437,8 @@ function isAdvertisement(webContents) {
             track.isAdvertisement = !isAdvertisement
             debug(`Is advertisement: ${track.isAdvertisement}`)
         })
-        .catch((_) => console.log('error isAdvertisement'))
+        .catch((_) => {})
+    // .catch((_) => console.log('error isAdvertisement'))
 }
 
 function setVolume(webContents, vol) {
