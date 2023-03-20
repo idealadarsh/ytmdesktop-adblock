@@ -5,7 +5,7 @@ var http = require('https')
 var fs = require('fs')
 const settingsProvider = require('./settingsProvider')
 
-const defaultLocale = settingsProvider.get('settings-app-language') || 'en'
+const defaultLocale = 'en'
 
 // Use app.getPath('userData') will cause problem here and I could not figure out why
 // So I add a stored value `settings-localses-path` as a workaround.
@@ -22,7 +22,7 @@ var updateLocaleFile = function (locale, cb, force = false) {
     // for developer, skip auto update to prevent data loss
     if (isDev && !force) {
         console.log('[!]Skip i18n auto-update in development mode')
-        // updateLocaleFile(locale, cb, true)
+        updateLocaleFile(locale, cb, true)
         console.log(
             '[!]You may force update i18n by uncomment previous line in `src/providers/translateProvider`'
         )

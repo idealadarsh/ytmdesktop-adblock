@@ -435,7 +435,7 @@ function isAdvertisement(webContents) {
         )
         .then((isAdvertisement) => {
             track.isAdvertisement = !isAdvertisement
-            debug(`Is advertisement: ${track.isAdvertisement}`)
+            // debug(`Is advertisement: ${track.isAdvertisement}`)
         })
         .catch((_) => {})
     // .catch((_) => console.log('error isAdvertisement'))
